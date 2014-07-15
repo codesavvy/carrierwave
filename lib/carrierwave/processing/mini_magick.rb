@@ -250,9 +250,13 @@ module CarrierWave
     #
     def manipulate!
       cache_stored_file! if !cached?
+      logger_with_puts "Starting crop of UserProfileImage in Gem-manipulate"
+      logger_with_puts "Current_Path: #{current_path}"
       image = ::MiniMagick::Image.open(current_path)
+      logger_with_puts "Created temp mini_magick file #{image.inspect}"
       image = yield(image)
       image.write(current_path)
+      logger_with_puts "Wrote back cropped version of UserProfileImage #{image.inspect}"
       ::MiniMagick::Image.open(current_path)
     rescue ::MiniMagick::Error, ::MiniMagick::Invalid => e
       raise CarrierWave::ProcessingError.new("Failed to manipulate with MiniMagick, maybe it is not an image? Original Error: #{e}")
